@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Nj Playground</title>
+
+        <link type="text/css" rel="stylesheet" href="/css/reset.css" />
+
+        <script type="text/javascript">
+            (function(window){
+                var document = window.document,
+                    // "Fake" Nj object to handle actions while "Real" Nj js are asynchronously loaded
+                    Nj = {
+                        initialized: false,
+                        Runnable:
+                        {
+                            actions: [],
+                            queue: function(action)
+                            {
+                                this.actions.push(action);
+                            },
+                            runOrQueue: function(fn)
+                            {
+                                if (Nj.initialized)
+                                {
+                                    fn();
+                                }
+                                else
+                                {
+                                    this.queue(fn);
+                                }
+                            },
+                            unqueueAll: function ()
+                            {
+                                for (var i = 0, l = this.actions.length; i < l ; i++)
+                                {
+                                    this.actions[i]();
+                                }
+                            }
+                        },
+                        Preload:
+                        {
+                            init: function()
+                            {
+                                var documentClick = function(e)
+                                {
+                                    var ev = e || window.event,
+                                        evCancel = ev.preventDefault ? ev.preventDefault() : (ev.returnValue = false),
+                                        evStopProp = ev.stopPropagation ? ev.stopPropagation : (ev.cancelBubble = true);
+                                };
+                                if (document.addEventListener)
+                                {
+                                    document.addEventListener('click', documentClick, false);
+                                    this.resetDefaultDocumentHandler = function()
+                                    {
+                                        document.removeEventListener('click', documentClick, false)
+                                    };
+                                }
+                                else if (document.attachEvent)
+                                {
+                                    document.attachEvent('onclick', this.documentClick);
+                                    this.resetDefaultDocumentHandler = function()
+                                    {
+                                        element.detachEvent('onclick', this.documentClick);
+                                    };
+                                }
+                            },
+                            end: function()
+                            {
+                                this.resetDefaultDocumentHandler();
+                                Nj.Runnable.unqueueAll();
+                            }
+                        },
+                        Envs:
+                        {
+                            all: {},
+                            get: function(key, datas)
+                            {
+                                var value = this.all[key];
+
+                                if (value && datas)
+                                {
+                                    for (key in datas)
+                                    {
+                                        value = value.replace(new RegExp('{#' + key + '}'), datas[key]);
+                                    }
+                                }
+
+                                return value || '';
+                            },
+                            set: function(key, value)
+                            {
+                                this.all[key] = value;
+                            }
+                        }
+                    };
+
+                Nj.Preload.init();
+                window.Nj = Nj;
+
+                /*DEV_CONFIG*/
+                // Now asynchronously load the real js lib
+                var head = document.getElementById('head') || document.documentElement,
+                    baseUri = '/js/',
+                    sources = ['jquery-1.7.1.min.js', 'nj.js']; // Add our main js files : jQuery, jQuery extensions, Nj, ...
+
+                (function()
+                {
+                    var e = document.createElement('script'),
+                        args = arguments.callee;
+                    e.type = 'text/javascript';
+                    e.src = baseUri + sources[0];
+                    e.async = true;
+                    head.insertBefore(e, head.firstChild);
+                    sources = sources.slice(1);
+                    if (sources.length)
+                    {
+                        setTimeout(function(){args(sources);}, 50);
+                    }
+                })();
+                /*END_DEV_CONFIG*/
+                /*PROD_CONFIG
+                var head = document.getElementById('head') || document.documentElement,
+                    e = document.createElement('script');
+                e.type = 'text/javascript';
+                e.src = JS_MAIN_PACK_NAME;
+                e.async = true;
+                head.insertBefore(e, head.firstChild);
+                END_PROD_CONFIG*/
+            })(window);
+
+            Nj.Envs.set('modulesBaseURI', /*MODULES_BASE_URI*/'/js/modules/'/*END_MODULES_BASE_URI*/);
+
+        </script>
+        <style type="text/css">
+            body
+            {
+                background: #1F1F1F;
+                font-size: 16px;
+                color: #F0F0F0;
+                font-family: sans-serif;
+                border-top: 1px solid black;
+            }
+            a
+            {
+                color: #3698E3;
+                text-decoration: none;
+            }
+            h1
+            {
+                font-size: 30px;
+                line-height: 60px;
+                text-align: center;
+                border-bottom: 1px solid black;
+                font-weight: bold;
+                margin: 0;
+                text-transform: uppercase;
+                color: #CCC;
+            }
+            .main_inner
+            {
+                border-top: 1px solid #333;
+                padding-top: 14px;
+                padding: 20px;
+            }
+
+            .test_div
+            {
+                padding: 20px;
+                color: #fff;
+            }
+            .grey_1
+            {
+                background: #333;
+            }
+            .grey_2
+            {
+                background: #222;
+            }
+            .grey_3
+            {
+                background: #111;
+            }
+            .green
+            {
+                color: #44ee44;
+            }
+            .info
+            {
+                color: #ff9900;
+            }
+            .info span
+            {
+                font-weight: bold;
+                color: #f2dd54;
+            }
+        </style>
+    </head>
+
+    <body>
+        <h1>Nj Playground</h1>
+
+        <div class="main_inner">
+
+            <div class="test_div grey_1" data-click="Test.done">
+                <span class="info">I have a <span>data-click="Test.done"</span> and I <span>propagate</span></span>
+                <div class="test_div grey_2" data-click="Test.done">
+                    <span class="info">I have a <span>data-click="Test.done"</span> and I <span>propagate</span></span>
+                    <div class="test_div grey_3" data-click="Test.done">
+                        <span class="info">I have a <span>data-click="Test.done"</span> and I <span>propagate</span></span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+    </body>
+</html>
