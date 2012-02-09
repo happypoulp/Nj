@@ -195,7 +195,7 @@
 
                             if (handlerReturn && handlerReturn.redirect)
                             {
-                                var redirectHref = handlerReturn.href || elt.href;
+                                var redirectHref = handlerReturn.redirect || elt.href;
 
                                 if (redirectHref)
                                 {

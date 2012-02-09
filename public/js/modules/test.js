@@ -51,7 +51,7 @@ handler: function(handlerDatas)
 {
     // Do smthg synchronous
 
-    return {redirect: true, href: '?redirected'};
+    return {redirect: '?redirected'};
 }
 
 --------  ...do a SYNCHRONOUS action and PROPAGATE and then a REDIRECT ? -----------
@@ -109,14 +109,34 @@ handler: function(handlerDatas)
                 },
                 done: function(handlerDatas)
                 {
-                    $(handlerDatas.element).append('<span class="green">#done# <s/pan>');
+                    $(handlerDatas.element).append('<span class="green">#done# </span>');
+                },
+                done_no_prop: function(handlerDatas)
+                {
+                    $(handlerDatas.element).append('<span class="green">#done_no_prop# </span>');
+                    return false;
+                },
+                done_and_redirect: function(handlerDatas)
+                {
+                    $(handlerDatas.element).append('<span class="green">#done_and_redirect# </span>');
+                    return {redirect: '?redirected'};
                 }
             },
             mousedown:
             {
-                mousedown: function(handlerDatas)
+                done: function(handlerDatas)
                 {
-                    log('mousedown', handlerDatas);
+                    $(handlerDatas.element).append('<span class="green">#done# </span>');
+                },
+                done_no_prop: function(handlerDatas)
+                {
+                    $(handlerDatas.element).append('<span class="green">#done_no_prop# </span>');
+                    return false;
+                },
+                done_and_redirect: function(handlerDatas)
+                {
+                    $(handlerDatas.element).append('<span class="green">#done_and_redirect# </span>');
+                    return {redirect: '?redirected'};
                 }
             },
             mouseup:
