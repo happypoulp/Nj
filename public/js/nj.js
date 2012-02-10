@@ -72,6 +72,7 @@
                     {
                         if ((e.button && e.button != 2) || (e.which && e.which != 3)) // To avoid catching right clicks
                         {
+                            this.registerMouseDown(e, 'mousedown');
                             // log('document mousedown initiated from : ', e.target);
                             this.eventHandler(e, null, 'mousedown');
                         }
@@ -80,7 +81,11 @@
                     .mouseup($.proxy(function(e)
                     {
                         // log('document mouseup initiated from : ', e.target);
-                        this.eventHandler(e, null, 'mouseup');
+                        if (!this.handleSpecialMouseDownUp(e, 'mouseup')
+                        {
+                            // log('mouseup not specialy handled, do it default way');
+                            this.eventHandler(e, null, 'mouseup');
+                        }
                     }, this))
 
                     // ... via "document submit"
@@ -128,30 +133,48 @@
                         typeRegister[elementKey] = handler;
                     }
                 },
-                getSpecialTargetForEvent: function(eventName)
+                registerMouseDown: function(ev)
                 {
-                    return eventName == 'mouseup' && this['mousedownHandler'] && this['mousedownHandler'].target ?
-                        $('#' + this['mousedownHandler'].target) :
-                        null;
-                },
-                setTargetForEvent: function(eventName, targetId)
-                {
-                    this[eventName + 'Handler'] = {target: targetId};
-                },
-                cleanTargetForEvent: function(eventName)
-                {
-                    if (eventName == 'mouseup')
+                    var jElt = $(ev.target);
+
+                    if (eventName == 'mousedown' && jElt.data('data-mouseup') && jElt.attr('data-followmouseup') && !this.mouseDownEltId)
                     {
-                        this['mouseupHandler'] = this['mousedownHandler'] = null;
+                        this.mouseDownEltId = Nj.Utils.identify(jElt);
                     }
-                    else if (eventName != 'mousedown')
+                },
+                handleSpecialMouseDownUp: function(ev, eventName)
+                {
+                    var jElt = $(ev.target);
+
+                    if (eventName == 'mouseup' && this.mouseDownEltId)
                     {
-                        this[eventName + 'Handler'] = null;
+                        if (Nj.Utils.identify(jElt) != this.mouseDownEltId)
+                        {
+                            var jElt = $('#' + this.mouseDownEltId);
+                            this.eventHandler(ev, jElt, 'mouseup');
+                        }
                     }
+
+                    this.mouseDownEltId = null;
                 },
                 eventHandler: function(ev, elt, eventName)
                 {
-                    var elt = this.getSpecialTargetForEvent(eventName) || elt || ev.target,
+                    // sur un element qui a un data-mousedwn & data-mouseup
+                    //     si l'element a un data-followmouseup
+                    //         au moment du mousedown
+                    //             on retient l'element cliqué et on enregistre sur le document (sur le body) le mouseup handler
+                    //         au moment du mouse up
+                    //             si l'element cliqué est le même que celui retenu
+                    //                 on enlève le mouseup handler du document
+                    //                 on laisse le mouse up de l'element agir
+                    //             sinon
+                    //                 on lance le mouseup handler retenu (sur le document)
+                    //                 et on l'enleve du document
+                    //                 on repart de l'element pour une propagation éventuelle
+                    //     sinon
+                    //         lorsqu'un mouseup surviendra le comportement par défaut sera appliqué
+                    var elt = elt || ev.target,
+                    // var elt = this.getSpecialTargetForEvent(eventName) || elt || ev.target,
                         jElt = $(elt),
                         propagate = true,
                         data = jElt.data(eventName);
@@ -160,7 +183,7 @@
                     if (data && /\./.test(data))
                     {
                         // Remember which element was event-ised (store its id in the appropriate handler)
-                        this.setTargetForEvent(eventName, Nj.Utils.identify(jElt));
+                        // this.setTargetForEvent(eventName, Nj.Utils.identify(jElt));
                         // log('Remember target ', this[eventName + 'Handler'], 'for event', eventName);
 
                         var parts = data.split('.'),
@@ -191,7 +214,7 @@
                             var handlerReturn = this.registry[eventName][handlerName]({event: ev, element: elt, elDatas: jsonData}),
                                 handlerPropagate = false;
 
-                            this.cleanTargetForEvent(eventName);
+                            // this.cleanTargetForEvent(eventName);
 
                             if (handlerReturn && handlerReturn.redirect)
                             {

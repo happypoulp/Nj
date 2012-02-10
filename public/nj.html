@@ -3,6 +3,9 @@
     <head>
         <title>Nj Playground</title>
 
+        <!-- <link href='http://fonts.googleapis.com/css?family=Kaushan+Script' rel='stylesheet' type='text/css'> -->
+        <link href='http://fonts.googleapis.com/css?family=Quicksand' rel='stylesheet' type='text/css'>
+        <link href='http://fonts.googleapis.com/css?family=Terminal+Dosis' rel='stylesheet' type='text/css'>
         <link type="text/css" rel="stylesheet" href="/css/reset.css" />
 
         <script type="text/javascript">
@@ -134,11 +137,13 @@
         <style type="text/css">
             body
             {
-                background: #1F1F1F;
+                background: #1F1F1F url(/vertical_cloth.png) repeat 0 0;
+                /*background: #1F1F1F url(/classy_fabric.png) repeat 0 0;*/
                 font-size: 16px;
                 color: #F0F0F0;
                 font-family: sans-serif;
                 border-top: 1px solid black;
+                font-family: 'Terminal Dosis', cursive;
             }
             a
             {
@@ -147,18 +152,19 @@
             }
             h1
             {
-                font-size: 30px;
-                line-height: 60px;
+                font-size: 34px;
+                line-height: 70px;
                 text-align: center;
                 border-bottom: 1px solid black;
                 font-weight: bold;
                 margin: 0;
                 text-transform: uppercase;
                 color: #5CF;
+                background: #151B1F;
             }
             h1 a
             {
-                color: #5CF;
+                color: #fff;
             }
             h1 a:hover
             {
@@ -168,32 +174,33 @@
             h3
             {
                 color: #aaa;
+                margin-bottom: 20px;333
             }
 
-            .main_inner
+            .main
             {
                 border-top: 1px solid #333;
+            }
+            .main_inner
+            {
                 padding-top: 14px;
                 padding: 20px;
+                width: 1000px;
+                margin: 0 auto;
             }
 
             .test_div
             {
                 padding: 10px 20px 20px 20px;
                 color: #fff;
-                box-shadow: 0 0 2px #888;
+                box-shadow: 4px 2px 12px #000;
+                font-size: 13px;
+                font-family: 'Quicksand', cursive;
+                border-radius: 8px;
             }
             .level_1
             {
-                background: #333;
-            }
-            .level_2
-            {
-                background: #222;
-            }
-            .level_3
-            {
-                background: #111;
+                background: rgba(40, 45, 55, 0.5);
             }
             .green
             {
@@ -220,119 +227,181 @@
     <body>
         <h1><a href="/nj.html">Nj Playground</a></h1>
 
-        <div class="main_inner">
+        <div class="main">
+            <div class="main_inner">
 
-            <!-- ------------------------------------ CLICK ------------------------------------------------- -->
-            <h2>Click Event</h2>
+                <!-- ------------------------------------ CLICK ------------------------------------------------- -->
+                <h2>Click Event</h2>
 
-            <h3>Propagation Tests</h3>
+                <h3>Propagation Tests</h3>
 
-            <div class="test_div level_1" data-click="Test.done">
-                <span class="info">I have a <span>data-click="Test.done"</span> and I <span>propagate</span></span>
-                <div class="test_div level_2" data-click="Test.done">
+                <div class="test_div level_1" data-click="Test.done">
                     <span class="info">I have a <span>data-click="Test.done"</span> and I <span>propagate</span></span>
-                    <div class="test_div level_3" data-click="Test.done">
+                    <div class="test_div level_1" data-click="Test.done">
                         <span class="info">I have a <span>data-click="Test.done"</span> and I <span>propagate</span></span>
+                        <div class="test_div level_1" data-click="Test.done">
+                            <span class="info">I have a <span>data-click="Test.done"</span> and I <span>propagate</span></span>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="sep"></div>
+                <div class="sep"></div>
 
-            <div class="test_div level_1" data-click="Test.done">
-                <span class="info">I have a <span>data-click="Test.done"</span> and I <span>propagate</span></span>
-                <div class="test_div level_2" data-click="Test.done_no_prop">
-                    <span class="info">I have a <span>data-click="Test.done_no_prop"</span> and I <span>DO NOT propagate</span></span>
-                    <div class="test_div level_3" data-click="Test.done">
-                        <span class="info">I have a <span>data-click="Test.done"</span> and I <span>propagate</span></span>
+                <div class="test_div level_1" data-click="Test.done">
+                    <span class="info">I have a <span>data-click="Test.done"</span> and I <span>propagate</span></span>
+                    <div class="test_div level_1" data-click="Test.done_no_prop">
+                        <span class="info">I have a <span>data-click="Test.done_no_prop"</span> and I <span>DO NOT propagate</span></span>
+                        <div class="test_div level_1" data-click="Test.done">
+                            <span class="info">I have a <span>data-click="Test.done"</span> and I <span>propagate</span></span>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="sep"></div>
+                <div class="sep"></div>
 
-            <h3>Redirect Tests</h3>
+                <h3>Redirect Tests</h3>
 
-            <div class="test_div level_1" data-click="Test.done_and_redirect">
-                <span class="info">I have a <span>data-click="Test.done_and_redirect"</span> and I <span>propagate</span></span>
-                <div class="test_div level_2" data-click="Test.done_no_prop">
-                    <span class="info">I have a <span>data-click="Test.done_no_prop"</span> and I <span>DO NOT propagate</span></span>
-                    <div class="test_div level_3" data-click="Test.done_and_redirect">
-                        <span class="info">I have a <span>data-click="Test.done_and_redirect"</span> and I <span>redirect</span></span>
+                <div class="test_div level_1" data-click="Test.done_and_redirect">
+                    <span class="info">I have a <span>data-click="Test.done_and_redirect"</span> and I <span>propagate</span></span>
+                    <div class="test_div level_1" data-click="Test.done_no_prop">
+                        <span class="info">I have a <span>data-click="Test.done_no_prop"</span> and I <span>DO NOT propagate</span></span>
+                        <div class="test_div level_1" data-click="Test.done_and_redirect">
+                            <span class="info">I have a <span>data-click="Test.done_and_redirect"</span> and I <span>redirect</span></span>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <!-- ------------------------------------ MOUSEDOWN ------------------------------------------------- -->
+                <!-- ------------------------------------ MOUSEDOWN ------------------------------------------------- -->
 
-            <h2>MouseDown Event</h2>
+                <h2>MouseDown Event</h2>
 
-            <h3>Propagation Tests</h3>
+                <h3>Propagation Tests</h3>
 
-            <div class="test_div level_1" data-mousedown="Test.done">
-                <span class="info">I have a <span>data-mousedown="Test.done"</span> and I <span>propagate</span></span>
-                <div class="test_div level_2" data-mousedown="Test.done">
+                <div class="test_div level_1" data-mousedown="Test.done">
                     <span class="info">I have a <span>data-mousedown="Test.done"</span> and I <span>propagate</span></span>
-                    <div class="test_div level_3" data-mousedown="Test.done">
-                        <span class="info">I have a <span>data-click="Test.done"</span> and I <span>propagate</span></span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="sep"></div>
-
-            <div class="test_div level_1" data-mousedown="Test.done">
-                <span class="info">I have a <span>data-mousedown="Test.done"</span> and I <span>propagate</span></span>
-                <div class="test_div level_2" data-mousedown="Test.done_no_prop">
-                    <span class="info">I have a <span>data-mousedown="Test.done_no_prop"</span> and I <span>DO NOT propagate</span></span>
-                    <div class="test_div level_3" data-mousedown="Test.done">
+                    <div class="test_div level_1" data-mousedown="Test.done">
                         <span class="info">I have a <span>data-mousedown="Test.done"</span> and I <span>propagate</span></span>
+                        <div class="test_div level_1" data-mousedown="Test.done">
+                            <span class="info">I have a <span>data-mousedown="Test.done"</span> and I <span>propagate</span></span>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="sep"></div>
+                <div class="sep"></div>
 
-            <h3>Redirect Tests</h3>
-
-            <div class="test_div level_1" data-mousedown="Test.done_and_redirect">
-                <span class="info">I have a <span>data-mousedown="Test.done_and_redirect"</span> and I <span>propagate</span></span>
-                <div class="test_div level_2" data-mousedown="Test.done_no_prop">
-                    <span class="info">I have a <span>data-mousedown="Test.done_no_prop"</span> and I <span>DO NOT propagate</span></span>
-                    <div class="test_div level_3" data-mousedown="Test.done_and_redirect">
-                        <span class="info">I have a <span>data-mousedown="Test.done_and_redirect"</span> and I <span>redirect</span></span>
+                <div class="test_div level_1" data-mousedown="Test.done">
+                    <span class="info">I have a <span>data-mousedown="Test.done"</span> and I <span>propagate</span></span>
+                    <div class="test_div level_1" data-mousedown="Test.done_no_prop">
+                        <span class="info">I have a <span>data-mousedown="Test.done_no_prop"</span> and I <span>DO NOT propagate</span></span>
+                        <div class="test_div level_1" data-mousedown="Test.done">
+                            <span class="info">I have a <span>data-mousedown="Test.done"</span> and I <span>propagate</span></span>
+                        </div>
                     </div>
                 </div>
+
+                <div class="sep"></div>
+
+                <h3>Redirect Tests</h3>
+
+                <div class="test_div level_1" data-mousedown="Test.done_and_redirect">
+                    <span class="info">I have a <span>data-mousedown="Test.done_and_redirect"</span> and I <span>propagate</span></span>
+                    <div class="test_div level_1" data-mousedown="Test.done_no_prop">
+                        <span class="info">I have a <span>data-mousedown="Test.done_no_prop"</span> and I <span>DO NOT propagate</span></span>
+                        <div class="test_div level_1" data-mousedown="Test.done_and_redirect">
+                            <span class="info">I have a <span>data-mousedown="Test.done_and_redirect"</span> and I <span>redirect</span></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ------------------------------------ MOUSEUP ------------------------------------------------- -->
+
+                <h2>MouseUp Event</h2>
+
+                <h3>Propagation Tests</h3>
+
+                <div class="test_div level_1" data-mouseup="Test.done">
+                    <span class="info">I have a <span>data-mouseup="Test.done"</span> and I <span>propagate</span></span>
+                    <div class="test_div level_1" data-mouseup="Test.done">
+                        <span class="info">I have a <span>data-mouseup="Test.done"</span> and I <span>propagate</span></span>
+                        <div class="test_div level_1" data-mouseup="Test.done">
+                            <span class="info">I have a <span>data-click="Test.done"</span> and I <span>propagate</span></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sep"></div>
+
+                <div class="test_div level_1" data-mouseup="Test.done">
+                    <span class="info">I have a <span>data-mouseup="Test.done"</span> and I <span>propagate</span></span>
+                    <div class="test_div level_1" data-mouseup="Test.done_no_prop">
+                        <span class="info">I have a <span>data-mouseup="Test.done_no_prop"</span> and I <span>DO NOT propagate</span></span>
+                        <div class="test_div level_1" data-mouseup="Test.done">
+                            <span class="info">I have a <span>data-mouseup="Test.done"</span> and I <span>propagate</span></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sep"></div>
+
+                <h3>Redirect Tests</h3>
+
+                <div class="test_div level_1" data-mouseup="Test.done_and_redirect">
+                    <span class="info">I have a <span>data-mouseup="Test.done_and_redirect"</span> and I <span>redirect</span></span>
+                    <div class="test_div level_1" data-mouseup="Test.done_no_prop">
+                        <span class="info">I have a <span>data-mouseup="Test.done_no_prop"</span> and I <span>DO NOT propagate</span></span>
+                        <div class="test_div level_1" data-mouseup="Test.done_and_redirect">
+                            <span class="info">I have a <span>data-mouseup="Test.done_and_redirect"</span> and I <span>redirect</span></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ------------------------------------ MOUSEDOWN & MOUSEUP ------------------------------------------------- -->
+
+                <h2>MouseDown & MouseUp Event</h2>
+
+                <h3>Propagation Tests</h3>
+
+                <div class="test_div level_1" data-mouseup="Test.doneup" data-mousedown="Test.donedown">
+                    <span class="info">
+                        I have a <span>data-mouseup="Test.doneup"</span> which <span>propagate</span>
+                        and I have a <span>data-mousedown="Test.donedown"</span> which <span>propagate</span>
+                    </span>
+                    <div class="test_div level_1" data-mouseup="Test.doneup" data-mousedown="Test.donedown">
+                        <span class="info">
+                            I have a <span>data-mouseup="Test.doneup"</span> which <span>propagate</span>
+                            and I have a <span>data-mousedown="Test.donedown"</span> which <span>propagate</span>
+                        </span>
+                        <div class="test_div level_1" data-mouseup="Test.doneup" data-mousedown="Test.donedown">
+                            <span class="info">
+                                I have a <span>data-click="Test.doneup"</span> which <span>propagate</span>
+                                and I have a <span>data-mousedown="Test.donedown"</span> which <span>propagate</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- ------------------------------------  KEYUP  ------------------------------------------------- -->
+
+                <h2>Keyup Event</h2>
+
+                <!-- ------------------------------------ SUBMIT ------------------------------------------------- -->
+
+                <h2>Submit Event</h2>
+
+                <!-- ------------------------------------ MOUSEOVER ------------------------------------------------- -->
+                
+                <h2>MouseOver Event</h2>
+
+                <!-- ------------------------------------ MOUSEOUT ------------------------------------------------- -->
+                
+                <h2>MouseOut Event</h2>
+
+                <!-- ------------------------------------ MOUSEOVER & MOUSEOUT ------------------------------------------------- -->
+                
+                <h2>MouseOver & MouseOut Event</h2>
+
             </div>
-
-            <!-- ------------------------------------ MOUSEUP ------------------------------------------------- -->
-
-            <h2>MouseUp Event</h2>
-
-            <!-- ------------------------------------ MOUSEDOWN & MOUSEUP ------------------------------------------------- -->
-
-            <h2>MouseDown & MouseUp Event</h2>
-
-            <!-- ------------------------------------  KEYUP  ------------------------------------------------- -->
-
-            <h2>Keyup Event</h2>
-
-            <!-- ------------------------------------ SUBMIT ------------------------------------------------- -->
-
-            <h2>Submit Event</h2>
-
-            <!-- ------------------------------------ MOUSEOVER ------------------------------------------------- -->
-            
-            <h2>MouseOver Event</h2>
-
-            <!-- ------------------------------------ MOUSEOUT ------------------------------------------------- -->
-            
-            <h2>MouseOut Event</h2>
-
-            <!-- ------------------------------------ MOUSEOVER & MOUSEOUT ------------------------------------------------- -->
-            
-            <h2>MouseOver & MouseOut Event</h2>
-
         </div>
 
     </body>

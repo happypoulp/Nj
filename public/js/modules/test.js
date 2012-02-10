@@ -128,6 +128,10 @@ handler: function(handlerDatas)
                 {
                     $(handlerDatas.element).append('<span class="green">#done# </span>');
                 },
+                donedown: function(handlerDatas)
+                {
+                    $(handlerDatas.element).append('<span class="green">#donedown# </span>');
+                },
                 done_no_prop: function(handlerDatas)
                 {
                     $(handlerDatas.element).append('<span class="green">#done_no_prop# </span>');
@@ -141,9 +145,23 @@ handler: function(handlerDatas)
             },
             mouseup:
             {
-                mouseup: function(handlerDatas)
+                done: function(handlerDatas)
                 {
-                    log('mouseup', handlerDatas);
+                    $(handlerDatas.element).append('<span class="green">#done# </span>');
+                },
+                doneup: function(handlerDatas)
+                {
+                    $(handlerDatas.element).append('<span class="green">#doneup# </span>');
+                },
+                done_no_prop: function(handlerDatas)
+                {
+                    $(handlerDatas.element).append('<span class="green">#done_no_prop# </span>');
+                    return false;
+                },
+                done_and_redirect: function(handlerDatas)
+                {
+                    $(handlerDatas.element).append('<span class="green">#done_and_redirect# </span>');
+                    return {redirect: '?redirected'};
                 }
             },
             keyup:
