@@ -380,6 +380,27 @@
                     </div>
                 </div>
 
+                <h3>Followmouseup Tests</h3>
+
+                <div class="test_div level_1" data-mouseup="Test.doneup" data-followmouseup data-mousedown="Test.donedown">
+                    <span class="info">
+                        I have a <span>data-mouseup="Test.doneup"</span> which <span>propagate</span>
+                        and I have a <span>data-mousedown="Test.donedown"</span> which <span>propagate</span>
+                        and I have a <span>data-followmouseup</span>
+                    </span>
+                    <div class="test_div level_1" data-mouseup="Test.doneup" data-mousedown="Test.donedown">
+                        <span class="info">
+                            I have a <span>data-mouseup="Test.doneup"</span> which <span>propagate</span>
+                            and I have a <span>data-mousedown="Test.donedown"</span> which <span>propagate</span>
+                        </span>
+                        <div class="test_div level_1" data-mouseup="Test.doneup" data-mousedown="Test.donedown">
+                            <span class="info">
+                                I have a <span>data-click="Test.doneup"</span> which <span>propagate</span>
+                                and I have a <span>data-mousedown="Test.donedown"</span> which <span>propagate</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- ------------------------------------  KEYUP  ------------------------------------------------- -->
 

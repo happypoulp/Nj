@@ -72,7 +72,6 @@
                     {
                         if ((e.button && e.button != 2) || (e.which && e.which != 3)) // To avoid catching right clicks
                         {
-                            this.registerMouseDown(e, 'mousedown');
                             // log('document mousedown initiated from : ', e.target);
                             this.eventHandler(e, null, 'mousedown');
                         }
@@ -133,13 +132,14 @@
                         typeRegister[elementKey] = handler;
                     }
                 },
-                registerMouseDown: function(ev)
+                rememberElementForEvent: function(eventName, jElt)
                 {
-                    var jElt = $(ev.target);
+                    log('rememberElementForEvent', eventName, jElt);
 
-                    if (jElt.data('mousedown') && jElt.data('mouseup') && jElt.attr('data-followmouseup') && !this.mouseDownEltId)
+                    if (jElt.data('mousedown') && jElt.data('mouseup') && jElt.attr('data-followmouseup') == '' && !this.mouseDownEltId)
                     {
                         this.mouseDownEltId = Nj.Utils.identify(jElt);
+                        log('Registered for mousedown', this.mouseDownEltId);
                     }
                 },
                 handleSpecialMouseDownUp: function(ev, eventName)
@@ -164,6 +164,7 @@
                     {
                         if (Nj.Utils.identify(jElt) != this.mouseDownEltId)
                         {
+                            log('handleSpecialMouseDownUp', this.mouseDownEltId);
                             var jElt = $('#' + this.mouseDownEltId);
                             this.eventHandler(ev, jElt, 'mouseup');
                         }
@@ -181,6 +182,9 @@
 
                     if (data && /\./.test(data))
                     {
+                        // Remember which element was event-ised (store its id in the appropriate handler)
+                        this.rememberElementForEvent(eventName, jElt);
+
                         var parts = data.split('.'),
                             jsonData = {module: parts[0], name: parts[1]}; // log('Datas found in this element : ', jsonData);
 
