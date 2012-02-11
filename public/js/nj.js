@@ -81,7 +81,7 @@
                     .mouseup($.proxy(function(e)
                     {
                         // log('document mouseup initiated from : ', e.target);
-                        if (!this.handleSpecialMouseDownUp(e, 'mouseup')
+                        if (!this.handleSpecialMouseDownUp(e, 'mouseup'))
                         {
                             // log('mouseup not specialy handled, do it default way');
                             this.eventHandler(e, null, 'mouseup');
@@ -137,27 +137,12 @@
                 {
                     var jElt = $(ev.target);
 
-                    if (eventName == 'mousedown' && jElt.data('data-mouseup') && jElt.attr('data-followmouseup') && !this.mouseDownEltId)
+                    if (jElt.data('mousedown') && jElt.data('mouseup') && jElt.attr('data-followmouseup') && !this.mouseDownEltId)
                     {
                         this.mouseDownEltId = Nj.Utils.identify(jElt);
                     }
                 },
                 handleSpecialMouseDownUp: function(ev, eventName)
-                {
-                    var jElt = $(ev.target);
-
-                    if (eventName == 'mouseup' && this.mouseDownEltId)
-                    {
-                        if (Nj.Utils.identify(jElt) != this.mouseDownEltId)
-                        {
-                            var jElt = $('#' + this.mouseDownEltId);
-                            this.eventHandler(ev, jElt, 'mouseup');
-                        }
-                    }
-
-                    this.mouseDownEltId = null;
-                },
-                eventHandler: function(ev, elt, eventName)
                 {
                     // sur un element qui a un data-mousedwn & data-mouseup
                     //     si l'element a un data-followmouseup
@@ -173,8 +158,22 @@
                     //                 on repart de l'element pour une propagation éventuelle
                     //     sinon
                     //         lorsqu'un mouseup surviendra le comportement par défaut sera appliqué
+                    var jElt = $(ev.target);
+
+                    if (eventName == 'mouseup' && this.mouseDownEltId)
+                    {
+                        if (Nj.Utils.identify(jElt) != this.mouseDownEltId)
+                        {
+                            var jElt = $('#' + this.mouseDownEltId);
+                            this.eventHandler(ev, jElt, 'mouseup');
+                        }
+                    }
+
+                    this.mouseDownEltId = null;
+                },
+                eventHandler: function(ev, elt, eventName)
+                {
                     var elt = elt || ev.target,
-                    // var elt = this.getSpecialTargetForEvent(eventName) || elt || ev.target,
                         jElt = $(elt),
                         propagate = true,
                         data = jElt.data(eventName);
@@ -182,10 +181,6 @@
 
                     if (data && /\./.test(data))
                     {
-                        // Remember which element was event-ised (store its id in the appropriate handler)
-                        // this.setTargetForEvent(eventName, Nj.Utils.identify(jElt));
-                        // log('Remember target ', this[eventName + 'Handler'], 'for event', eventName);
-
                         var parts = data.split('.'),
                             jsonData = {module: parts[0], name: parts[1]}; // log('Datas found in this element : ', jsonData);
 
@@ -213,8 +208,6 @@
                             // log('### Run handler ###');
                             var handlerReturn = this.registry[eventName][handlerName]({event: ev, element: elt, elDatas: jsonData}),
                                 handlerPropagate = false;
-
-                            // this.cleanTargetForEvent(eventName);
 
                             if (handlerReturn && handlerReturn.redirect)
                             {
