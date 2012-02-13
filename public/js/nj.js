@@ -99,6 +99,19 @@
                     {
                         // log('document keyup initiated from : ', e.target);
                         this.eventHandler(e, null, 'keyup');
+                    }, this))
+
+                    // ... via "document mouseover"
+                    .mouseover($.proxy(function(e)
+                    {
+                        // log('document mouseover initiated from : ', e.target);
+                        this.eventHandler(e, null, 'mouseover');
+                    }, this))
+                    // ... via "document mouseout"
+                    .mouseout($.proxy(function(e)
+                    {
+                        // log('document mouseout initiated from : ', e.target);
+                        this.eventHandler(e, null, 'mouseout');
                     }, this));
                 },
                 // Register new handlers for given module
@@ -134,12 +147,12 @@
                 },
                 rememberElementForEvent: function(eventName, jElt)
                 {
-                    log('rememberElementForEvent', eventName, jElt);
+                    // log('rememberElementForEvent', eventName, jElt);
 
-                    if (jElt.data('mousedown') && jElt.data('mouseup') && jElt.attr('data-followmouseup') == '' && !this.mouseDownEltId)
+                    if (eventName == 'mousedown' && jElt.data('mousedown') && jElt.data('mouseup') && jElt.attr('data-followmouseup') == '' && !this.mouseDownEltId)
                     {
                         this.mouseDownEltId = Nj.Utils.identify(jElt);
-                        log('Registered for mousedown', this.mouseDownEltId);
+                        // log('Registered for mousedown', this.mouseDownEltId);
                     }
                 },
                 handleSpecialMouseDownUp: function(ev, eventName)
@@ -160,17 +173,41 @@
                     //         lorsqu'un mouseup surviendra le comportement par défaut sera appliqué
                     var jElt = $(ev.target);
 
+                    // log('handleSpecialMouseDownUp', this.mouseDownEltId);
+
                     if (eventName == 'mouseup' && this.mouseDownEltId)
                     {
                         if (Nj.Utils.identify(jElt) != this.mouseDownEltId)
                         {
-                            log('handleSpecialMouseDownUp', this.mouseDownEltId);
+                            // log('Found a special handler for', this.mouseDownEltId);
                             var jElt = $('#' + this.mouseDownEltId);
-                            this.eventHandler(ev, jElt, 'mouseup');
+                            this.mouseDownEltId = null;
+                            this.eventHandler(ev, jElt.get(0), 'mouseup');
+                            return true;
                         }
                     }
 
                     this.mouseDownEltId = null;
+                },
+                abortHandling: function(ev, elt, eventName)
+                {
+                    if (eventName == 'mouseover' || eventName == 'mouseout')
+                    {
+                        log(ev.target, elt, ev.target != elt);
+                        if (ev.target != elt || ev.target.mouseovering)
+                        {
+                            return true;
+                        }
+                        else if (eventName == 'mouseover')
+                        {
+                            ev.target.mouseovering = true;
+                        }
+                        // ev.target is a child of 
+                        else
+                        {
+                            ev.target.mouseovering = false;
+                        }
+                    }
                 },
                 eventHandler: function(ev, elt, eventName)
                 {
@@ -182,6 +219,13 @@
 
                     if (data && /\./.test(data))
                     {
+                        log('Found data', eventName);
+                        if (this.abortHandling(ev, elt, eventName))
+                        {
+                            log('Abort' + eventName + ' on ', jElt);
+                            return false;
+                        }
+
                         // Remember which element was event-ised (store its id in the appropriate handler)
                         this.rememberElementForEvent(eventName, jElt);
 
@@ -194,10 +238,11 @@
                         // Handle module dependant handler
                         if (jsonData.module && !Nj.Modules.loaded(jsonData.module))
                         {
-                            // log('Need loading of module', jsonData.module);
+                            log('Need loading of module', jsonData.module);
                             // Load required module and assign callback
                             Nj.Modules.loadForEventOnElement(eventName, elt, function()
                             {
+                                log(jsonData.module, 'Module loaded relaunch handler');
                                 Nj.Event.eventHandler(ev, elt, eventName);
                             });
                             return;
@@ -207,9 +252,9 @@
                         // Search for handler associated to jsonData.name in registry
                         if (this.registry[eventName][handlerName])
                         {
-                            // log('Handler found for this event on this element');
+                            log('Handler found for this event on this element');
                             // Run handler
-                            // log('### Run handler ###');
+                            log('### Run handler ###');
                             var handlerReturn = this.registry[eventName][handlerName]({event: ev, element: elt, elDatas: jsonData}),
                                 handlerPropagate = false;
 
@@ -252,6 +297,7 @@
                     // elt.nodeType == 1 is to check that we do not go beyond "html" tag
                     if ((elt = elt.parentNode) && elt.nodeType == 1)
                     {
+                        // log('Event', eventName, 'Element found for propagation : ', $(elt));
                         this.eventHandler(ev, elt, eventName);
                     }
                 }

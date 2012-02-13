@@ -3,9 +3,6 @@
     <head>
         <title>Nj Playground</title>
 
-        <!-- <link href='http://fonts.googleapis.com/css?family=Kaushan+Script' rel='stylesheet' type='text/css'> -->
-        <link href='http://fonts.googleapis.com/css?family=Quicksand' rel='stylesheet' type='text/css'>
-        <link href='http://fonts.googleapis.com/css?family=Terminal+Dosis' rel='stylesheet' type='text/css'>
         <link type="text/css" rel="stylesheet" href="/css/reset.css" />
 
         <script type="text/javascript">
@@ -135,6 +132,19 @@
 
         </script>
         <style type="text/css">
+            @font-face {
+              font-family: 'Terminal Dosis';
+              font-style: normal;
+              font-weight: 400;
+              src: local('Terminal Dosis Book'), local('TerminalDosis-Book'), url('/terminaldosis.woff') format('woff');
+            }
+            @font-face {
+              font-family: 'Quicksand';
+              font-style: normal;
+              font-weight: 400;
+              src: local('Quicksand Regular'), local('Quicksand-Regular'), url('/quicksand.woff') format('woff');
+            }
+
             body
             {
                 background: #1F1F1F url(/vertical_cloth.png) repeat 0 0;
@@ -361,20 +371,20 @@
 
                 <h3>Propagation Tests</h3>
 
-                <div class="test_div level_1" data-mouseup="Test.doneup" data-mousedown="Test.donedown">
+                <div class="test_div level_1" data-mouseup="Test.done" data-mousedown="Test.done">
                     <span class="info">
-                        I have a <span>data-mouseup="Test.doneup"</span> which <span>propagate</span>
-                        and I have a <span>data-mousedown="Test.donedown"</span> which <span>propagate</span>
+                        I have a <span>data-mouseup="Test.done"</span> which <span>propagate</span>
+                        and I have a <span>data-mousedown="Test.done"</span> which <span>propagate</span>
                     </span>
-                    <div class="test_div level_1" data-mouseup="Test.doneup" data-mousedown="Test.donedown">
+                    <div class="test_div level_1" data-mouseup="Test.done" data-mousedown="Test.done">
                         <span class="info">
-                            I have a <span>data-mouseup="Test.doneup"</span> which <span>propagate</span>
-                            and I have a <span>data-mousedown="Test.donedown"</span> which <span>propagate</span>
+                            I have a <span>data-mouseup="Test.done"</span> which <span>propagate</span>
+                            and I have a <span>data-mousedown="Test.done"</span> which <span>propagate</span>
                         </span>
-                        <div class="test_div level_1" data-mouseup="Test.doneup" data-mousedown="Test.donedown">
+                        <div class="test_div level_1" data-mouseup="Test.done" data-mousedown="Test.done">
                             <span class="info">
-                                I have a <span>data-click="Test.doneup"</span> which <span>propagate</span>
-                                and I have a <span>data-mousedown="Test.donedown"</span> which <span>propagate</span>
+                                I have a <span>data-click="Test.done"</span> which <span>propagate</span>
+                                and I have a <span>data-mousedown="Test.done"</span> which <span>propagate</span>
                             </span>
                         </div>
                     </div>
@@ -382,21 +392,90 @@
 
                 <h3>Followmouseup Tests</h3>
 
-                <div class="test_div level_1" data-mouseup="Test.doneup" data-followmouseup data-mousedown="Test.donedown">
+                <div class="test_div level_1" data-mouseup="Test.done" data-followmouseup data-mousedown="Test.done">
                     <span class="info">
-                        I have a <span>data-mouseup="Test.doneup"</span> which <span>propagate</span>
-                        and I have a <span>data-mousedown="Test.donedown"</span> which <span>propagate</span>
+                        I have a <span>data-mouseup="Test.done"</span> which <span>propagate</span>
+                        and I have a <span>data-mousedown="Test.done"</span> which <span>propagate</span>
                         and I have a <span>data-followmouseup</span>
                     </span>
-                    <div class="test_div level_1" data-mouseup="Test.doneup" data-mousedown="Test.donedown">
+                    <div class="test_div level_1" data-mouseup="Test.done" data-mousedown="Test.done">
                         <span class="info">
-                            I have a <span>data-mouseup="Test.doneup"</span> which <span>propagate</span>
-                            and I have a <span>data-mousedown="Test.donedown"</span> which <span>propagate</span>
+                            I have a <span>data-mouseup="Test.done"</span> which <span>propagate</span>
+                            and I have a <span>data-mousedown="Test.done"</span> which <span>propagate</span>
                         </span>
-                        <div class="test_div level_1" data-mouseup="Test.doneup" data-mousedown="Test.donedown">
+                        <div class="test_div level_1" data-mouseup="Test.done" data-mousedown="Test.done">
                             <span class="info">
-                                I have a <span>data-click="Test.doneup"</span> which <span>propagate</span>
-                                and I have a <span>data-mousedown="Test.donedown"</span> which <span>propagate</span>
+                                I have a <span>data-mouseup="Test.done"</span> which <span>propagate</span>
+                                and I have a <span>data-mousedown="Test.done"</span> which <span>propagate</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sep"></div>
+
+                <div class="test_div level_1" data-mouseup="Test.done" data-followmouseup data-mousedown="Test.done">
+                    <span class="info">
+                        I have a <span>data-mouseup="Test.done"</span> which <span>propagate</span>
+                        and I have a <span>data-mousedown="Test.done"</span> which <span>propagate</span>
+                        and I have a <span>data-followmouseup</span>
+                    </span>
+                    <div class="test_div level_1" data-mouseup="Test.done" data-followmouseup data-mousedown="Test.done_no_prop">
+                        <span class="info">
+                            I have a <span>data-mouseup="Test.done"</span> which <span>propagate</span>
+                            and I have a <span>data-mousedown="Test.done_no_prop"</span> which DO NOT <span>propagate</span>
+                            and I have a <span>data-followmouseup</span>
+                        </span>
+                        <div class="test_div level_1" data-mouseup="Test.done" data-mousedown="Test.done">
+                            <span class="info">
+                                I have a <span>data-mouseup="Test.done"</span> which <span>propagate</span>
+                                and I have a <span>data-mousedown="Test.done"</span> which <span>propagate</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sep"></div>
+
+                <div class="test_div level_1" data-mouseup="Test.done" data-followmouseup data-mousedown="Test.done">
+                    <span class="info">
+                        I have a <span>data-mouseup="Test.done"</span> which <span>propagate</span>
+                        and I have a <span>data-mousedown="Test.done"</span> which <span>propagate</span>
+                        and I have a <span>data-followmouseup</span>
+                    </span>
+                    <div class="test_div level_1" data-mouseup="Test.done_no_prop" data-followmouseup data-mousedown="Test.done">
+                        <span class="info">
+                            I have a <span>data-mouseup="Test.done_no_prop"</span> which <span>DO NOT propagate</span>
+                            and I have a <span>data-mousedown="Test.done"</span> which <span>propagate</span>
+                            and I have a <span>data-followmouseup</span>
+                        </span>
+                        <div class="test_div level_1" data-mouseup="Test.done" data-mousedown="Test.done">
+                            <span class="info">
+                                I have a <span>data-mouseup="Test.done"</span> which <span>propagate</span>
+                                and I have a <span>data-mousedown="Test.done"</span> which <span>propagate</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sep"></div>
+
+                <div class="test_div level_1" data-mouseup="Test.done" data-followmouseup data-mousedown="Test.done">
+                    <span class="info">
+                        I have a <span>data-mouseup="Test.done"</span> which <span>propagate</span>
+                        and I have a <span>data-mousedown="Test.done"</span> which <span>propagate</span>
+                        and I have a <span>data-followmouseup</span>
+                    </span>
+                    <div class="test_div level_1" data-mouseup="Test.done_no_prop" data-followmouseup data-mousedown="Test.done_no_prop">
+                        <span class="info">
+                            I have a <span>data-mouseup="Test.done_no_prop"</span> which <span>DO NOT propagate</span>
+                            and I have a <span>data-mousedown="Test.done_no_prop"</span> which <span>DO NOT propagate</span>
+                            and I have a <span>data-followmouseup</span>
+                        </span>
+                        <div class="test_div level_1" data-mouseup="Test.done" data-mousedown="Test.done">
+                            <span class="info">
+                                I have a <span>data-mouseup="Test.done"</span> which <span>propagate</span>
+                                and I have a <span>data-mousedown="Test.done"</span> which <span>propagate</span>
                             </span>
                         </div>
                     </div>
@@ -406,21 +485,98 @@
 
                 <h2>Keyup Event</h2>
 
-                <!-- ------------------------------------ SUBMIT ------------------------------------------------- -->
+                <div class="test_div level_1" data-keyup="Test.catch">
+                    <span class="info">
+                        I have a <span>data-keyup="Test.catch"</span> which <span>propagate</span>
+                    </span>
+                    <div class="test_div level_1" data-keyup="Test.catch">
+                        <span class="info">
+                            I have a <span>data-keyup="Test.catch"</span> which <span>propagate</span>
+                        </span>
+                        <div class="test_div level_1" data-keyup="Test.catch">
+                            <input type="text" name="i" data-keyup="Test.catch"/>
+                            <span class="info">
+                                I have a <span>data-keyup="Test.catch"</span> which <span>propagate</span>
+                                The input have a <span>data-keyup="Test.catch"</span> which <span>propagate</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
 
-                <h2>Submit Event</h2>
+                <div class="sep"></div>
+
+                <div class="test_div level_1" data-keyup="Test.catch">
+                    <span class="info">
+                        I have a <span>data-keyup="Test.catch"</span> which <span>propagate</span>
+                    </span>
+                    <div class="test_div level_1" data-keyup="Test.catch_no_prop">
+                        <span class="info">
+                            I have a <span>data-keyup="Test.catch_no_prop"</span> which <span>DO NOT propagate</span>
+                        </span>
+                        <div class="test_div level_1" data-keyup="Test.catch">
+                            <input type="text" name="i" data-keyup="Test.catch"/>
+                            <span class="info">
+                                I have a <span>data-keyup="Test.catch"</span> which <span>propagate</span>
+                                The input have a <span>data-keyup="Test.catch"</span> which <span>propagate</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sep"></div>
+
+                <div class="test_div level_1" data-keyup="Test.catch">
+                    <span class="info">
+                        I have a <span>data-keyup="Test.catch"</span> which <span>propagate</span>
+                    </span>
+                    <div class="test_div level_1" data-keyup="Test.catch_no_prop">
+                        <span class="info">
+                            I have a <span>data-keyup="Test.catch_no_prop"</span> which <span>DO NOT propagate</span>
+                        </span>
+                        <div class="test_div level_1" data-keyup="Test.catch">
+                            <input type="text" name="i" data-keyup="Test.catch_no_prop"/>
+                            <span class="info">
+                                I have a <span>data-keyup="Test.catch"</span> which <span>propagate</span>
+                                The input have a <span>data-keyup="Test.catch_no_prop"</span> which <span>DO NOT propagate</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- ------------------------------------ MOUSEOVER ------------------------------------------------- -->
                 
                 <h2>MouseOver Event</h2>
 
+                <div class="test_div level_1" data-mouseover="Test.done">
+                    <span class="info">
+                        I have a <span>data-mouseover="Test.done"</span> which <span>propagate</span>
+                    </span>
+                </div>
+
                 <!-- ------------------------------------ MOUSEOUT ------------------------------------------------- -->
                 
-                <h2>MouseOut Event</h2>
+                <h2>MouseOut Event</h2> 
+
+                <div class="test_div level_1" data-mouseout="Test.done">
+                    <span class="info">
+                        I have a <span>data-mouseout="Test.done"</span> which <span>propagate</span>
+                    </span>
+                </div>
 
                 <!-- ------------------------------------ MOUSEOVER & MOUSEOUT ------------------------------------------------- -->
                 
                 <h2>MouseOver & MouseOut Event</h2>
+
+                <div class="test_div level_1" data-mouseover="Test.done" data-mouseout="Test.done">
+                    <span class="info">
+                        I have a <span>data-mouseout="Test.done"</span> which <span>propagate</span>
+                        and I have a <span>data-mouseover="Test.done"</span> which <span>propagate</span>
+                    </span>
+                </div>
+
+                <!-- ------------------------------------ SUBMIT ------------------------------------------------- -->
+
+                <h2>Submit Event</h2>
 
             </div>
         </div>

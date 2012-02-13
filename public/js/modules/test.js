@@ -78,47 +78,18 @@ handler: function(handlerDatas)
         {
             click:
             {
-                test_block: function(handlerDatas)
-                {
-                    // handlerDatas provides :
-                    // handlerDatas.event, handlerDatas.element and handlerDatas.elDatas
-                    alert('test_block clicked');
-                    return false; // DOES NOT propagate
-                    // return true; // propagate
-                    // return {propagate: true}; // async AND propagate
-                    // return {propagate: false}; // async AND DOES NOT propagate
-                },
-                test_ok: function(handlerDatas)
-                {
-                    alert('test_ok clicked');
-
-                    // An async action like the ajax call below should ALWAYS be the LAST thing executed in a handler callback
-                    // and always return false hence there is no propagation possible.
-
-                    return Nj.Ajax.call({
-                        method: 'get',
-                        href: '/test/ajaxtest',
-                        callback: {module: 'Test', method: 'insertResult'}
-                    });
-                },
-                test_ok_no_ajax_with_redirection: function(handlerDatas)
-                {
-                    alert('test_ok_no_ajax_with_redirection clicked');
-
-                    return {redirect: true, href: '?redirected'};
-                },
                 done: function(handlerDatas)
                 {
-                    $(handlerDatas.element).append('<span class="green">#done# </span>');
+                    $(handlerDatas.element).append('<span class="green">#done click# </span>');
                 },
                 done_no_prop: function(handlerDatas)
                 {
-                    $(handlerDatas.element).append('<span class="green">#done_no_prop# </span>');
+                    $(handlerDatas.element).append('<span class="green">#done_no_prop click# </span>');
                     return false;
                 },
                 done_and_redirect: function(handlerDatas)
                 {
-                    $(handlerDatas.element).append('<span class="green">#done_and_redirect# </span>');
+                    $(handlerDatas.element).append('<span class="green">#done_and_redirect click# </span>');
                     return {redirect: '?redirected'};
                 }
             },
@@ -126,20 +97,16 @@ handler: function(handlerDatas)
             {
                 done: function(handlerDatas)
                 {
-                    $(handlerDatas.element).append('<span class="green">#done# </span>');
-                },
-                donedown: function(handlerDatas)
-                {
-                    $(handlerDatas.element).append('<span class="green">#donedown# </span>');
+                    $(handlerDatas.element).append('<span class="green">#done mousedown# </span>');
                 },
                 done_no_prop: function(handlerDatas)
                 {
-                    $(handlerDatas.element).append('<span class="green">#done_no_prop# </span>');
+                    $(handlerDatas.element).append('<span class="green">#done_no_prop mousedown# </span>');
                     return false;
                 },
                 done_and_redirect: function(handlerDatas)
                 {
-                    $(handlerDatas.element).append('<span class="green">#done_and_redirect# </span>');
+                    $(handlerDatas.element).append('<span class="green">#done_and_redirect mousedown# </span>');
                     return {redirect: '?redirected'};
                 }
             },
@@ -147,25 +114,45 @@ handler: function(handlerDatas)
             {
                 done: function(handlerDatas)
                 {
-                    $(handlerDatas.element).append('<span class="green">#done# </span>');
-                },
-                doneup: function(handlerDatas)
-                {
-                    $(handlerDatas.element).append('<span class="green">#doneup# </span>');
+                    $(handlerDatas.element).append('<span class="green">#done mouseup# </span>');
                 },
                 done_no_prop: function(handlerDatas)
                 {
-                    $(handlerDatas.element).append('<span class="green">#done_no_prop# </span>');
+                    $(handlerDatas.element).append('<span class="green">#done_no_prop mouseup# </span>');
                     return false;
                 },
                 done_and_redirect: function(handlerDatas)
                 {
-                    $(handlerDatas.element).append('<span class="green">#done_and_redirect# </span>');
+                    $(handlerDatas.element).append('<span class="green">#done_and_redirect mouseup# </span>');
                     return {redirect: '?redirected'};
                 }
             },
             keyup:
             {
+                catch: function(handlerDatas)
+                {
+                    if (handlerDatas.element.nodeName.toUpperCase() == 'INPUT')
+                    {
+                        $(handlerDatas.element).after('<span class="green">#catch input keyup# </span>');
+                    }
+                    else
+                    {
+                        $(handlerDatas.element).append('<span class="green">#catch element keyup# </span>');
+                    }
+                },
+                catch_no_prop: function(handlerDatas)
+                {
+                    if (handlerDatas.element.nodeName.toUpperCase() == 'INPUT')
+                    {
+                        $(handlerDatas.element).after('<span class="green">#catch input keyup# </span>');
+                    }
+                    else
+                    {
+                        $(handlerDatas.element).append('<span class="green">#catch element keyup# </span>');
+                    }
+
+                    return false;
+                },
                 input_key: function(handlerDatas)
                 {
                     clearTimeout(this.inputTO);
@@ -181,6 +168,21 @@ handler: function(handlerDatas)
                     }, this), 400);
 
                     return false;
+                }
+            },
+            mouseover:
+            {
+                done: function(handlerDatas)
+                {
+                    // log(handlerDatas.event.target, handlerDatas.element);
+                    $(handlerDatas.element).append('<span class="green">#done mouseover# </span>');
+                }
+            },
+            mouseout:
+            {
+                done: function(handlerDatas)
+                {
+                    $(handlerDatas.element).append('<span class="green">#done mouseout# </span>');
                 }
             }
         },
