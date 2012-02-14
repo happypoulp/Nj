@@ -157,20 +157,6 @@
                 },
                 handleSpecialMouseDownUp: function(ev, eventName)
                 {
-                    // sur un element qui a un data-mousedwn & data-mouseup
-                    //     si l'element a un data-followmouseup
-                    //         au moment du mousedown
-                    //             on retient l'element cliqué et on enregistre sur le document (sur le body) le mouseup handler
-                    //         au moment du mouse up
-                    //             si l'element cliqué est le même que celui retenu
-                    //                 on enlève le mouseup handler du document
-                    //                 on laisse le mouse up de l'element agir
-                    //             sinon
-                    //                 on lance le mouseup handler retenu (sur le document)
-                    //                 et on l'enleve du document
-                    //                 on repart de l'element pour une propagation éventuelle
-                    //     sinon
-                    //         lorsqu'un mouseup surviendra le comportement par défaut sera appliqué
                     var jElt = $(ev.target);
 
                     // log('handleSpecialMouseDownUp', this.mouseDownEltId);
@@ -189,24 +175,54 @@
 
                     this.mouseDownEltId = null;
                 },
+                hovering: [],
                 abortHandling: function(ev, elt, eventName)
                 {
+                    log('abortHandling?');
                     if (eventName == 'mouseover' || eventName == 'mouseout')
                     {
-                        log(ev.target, elt, ev.target != elt);
-                        if (ev.target != elt || ev.target.mouseovering)
+                        var id = Nj.Utils.identify($(ev.target)),
+                            idIndex = this.hovering.indexOf(id);
+                        log('Event', eventName);
+                        log('ev.target', ev.target, 'elt', elt, ev.target != elt, idIndex, this.hovering.join(' - '));
+                        if (ev.target != elt || idIndex != -1)
                         {
                             return true;
                         }
-                        else if (eventName == 'mouseover')
+                        else if (eventName == 'mouseover' && idIndex == -1)
                         {
-                            ev.target.mouseovering = true;
+                            log('ADD to array elt id', id);
+                            this.hovering.push(id);
                         }
-                        // ev.target is a child of 
                         else
                         {
-                            ev.target.mouseovering = false;
+                            log('REMOVE from array', this.hovering.join(' - '), 'elt id', id);
+                            this.hovering.splice(idIndex, 1);
                         }
+                    }
+                },
+                /*
+                    only check next mouseover to determine if previous mouseout must be called?
+                    Steps : 
+                        - onmouseover DO the job 
+                            - remember the element mouseovered + all params needed to call mouse out later FOR THIS ELEMENT.
+                        - check if the element concerned by the mouseover is a child of the remembered mouseovered element
+                            - if IT IS, do NOT call remembered mouseout FOR THE REMEMBERED ELEMENT
+                            - if NOT then call the mouseout for the remembered element.
+                    All remembered element should be stored as a FILO.
+                    An element with a mouseover but without a mouseout should get a default mouseout that remove him from the hovering array.
+                */
+                handleNoDataFound: function(ev, jElt, eventName)
+                {
+                    log('handleNoDataFound');
+                    var id = Nj.Utils.identify(jElt),
+                        idIndex;
+
+                    if (eventName == 'mouseout' && ev.target == jElt.get(0) && (idIndex = this.hovering.indexOf(id)) != -1)
+                    {
+                        log('no data for mouseout event on', jElt, idIndex);
+                        log('REMOVE from array', this.hovering.join(' - '), 'elt id', id);
+                        this.hovering.splice(idIndex, 1);
                     }
                 },
                 eventHandler: function(ev, elt, eventName)
@@ -215,19 +231,11 @@
                         jElt = $(elt),
                         propagate = true,
                         data = jElt.data(eventName);
-                        // log('Search for data-' + eventName + ' in ', jElt);
+                        log('Search for data-' + eventName + ' in ', jElt);
 
                     if (data && /\./.test(data))
                     {
                         log('Found data', eventName);
-                        if (this.abortHandling(ev, elt, eventName))
-                        {
-                            log('Abort' + eventName + ' on ', jElt);
-                            return false;
-                        }
-
-                        // Remember which element was event-ised (store its id in the appropriate handler)
-                        this.rememberElementForEvent(eventName, jElt);
 
                         var parts = data.split('.'),
                             jsonData = {module: parts[0], name: parts[1]}; // log('Datas found in this element : ', jsonData);
@@ -247,6 +255,15 @@
                             });
                             return;
                         }
+
+                        if (this.abortHandling(ev, elt, eventName))
+                        {
+                            log('Abort' + eventName + ' on ', jElt);
+                            return false;
+                        }
+
+                        // Remember which element was event-ised (store its id in the appropriate handler)
+                        this.rememberElementForEvent(eventName, jElt);
 
                         var handlerName = data;
                         // Search for handler associated to jsonData.name in registry
@@ -285,6 +302,10 @@
                             propagate = propagate && handlerPropagate;
                         }
                     }
+                    else
+                    {
+                        this.handleNoDataFound(ev, jElt, eventName);
+                    }
 
                     if (propagate)
                     {
@@ -298,8 +319,9 @@
                     if ((elt = elt.parentNode) && elt.nodeType == 1)
                     {
                         // log('Event', eventName, 'Element found for propagation : ', $(elt));
-                        this.eventHandler(ev, elt, eventName);
+                        return this.eventHandler(ev, elt, eventName);
                     }
+                    log('------------------ END OF PROPAGATION "', eventName, '" ----------------');
                 }
             },
             // Modules handles the logic for loading and managing all JS modules of the page.
