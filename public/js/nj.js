@@ -63,13 +63,14 @@
                     $(document)
                     .click($.proxy(function(e)
                     {
-                        // log('document click initiated from : ', e.target);
+                        // log('############## document click initiated from : ', e.target);
                         this.eventHandler(e, null, 'click');
                     }, this))
                     // ... via "document mousedown"
                     // $.proxy is done to overload jQuery callback binding on document element
                     .mousedown($.proxy(function(e)
                     {
+                        // log('############## document mousedown initiated from : ', e.target);
                         if ((e.button && e.button != 2) || (e.which && e.which != 3)) // To avoid catching right clicks
                         {
                             // log('document mousedown initiated from : ', e.target);
@@ -79,7 +80,7 @@
                     // ... via "document mouseup"
                     .mouseup($.proxy(function(e)
                     {
-                        // log('document mouseup initiated from : ', e.target);
+                        // log('############## document mouseup initiated from : ', e.target);
                         if (!this.handleSpecialMouseDownUp(e, 'mouseup'))
                         {
                             // log('mouseup not specialy handled, do it default way');
@@ -90,27 +91,28 @@
                     // ... via "document submit"
                     .submit($.proxy(function(e)
                     {
-                        // log('document submit initiated from : ', e.target);
+                        // log('############## document submit initiated from : ', e.target);
                         this.eventHandler(e, null, 'submit');
                     }, this))
 
                     // ... via "document key up" (keypress does not catch DEL and some others keys)
                     .keyup($.proxy(function(e)
                     {
-                        // log('document keyup initiated from : ', e.target);
+                        // log('############## document keyup initiated from : ', e.target);
                         this.eventHandler(e, null, 'keyup');
                     }, this))
 
                     // ... via "document mouseover"
                     .mouseover($.proxy(function(e)
                     {
-                        // log('document mouseover initiated from : ', e.target);
+                        log('############## document mouseover initiated from : ', e.target);
                         this.eventHandler(e, null, 'mouseover');
                     }, this))
+                    // ;
                     // ... via "document mouseout"
                     .mouseout($.proxy(function(e)
                     {
-                        // log('document mouseout initiated from : ', e.target);
+                        log('############## document mouseout initiated from : ', e.target);
                         this.eventHandler(e, null, 'mouseout');
                     }, this));
                 },
@@ -175,32 +177,33 @@
 
                     this.mouseDownEltId = null;
                 },
-                hovering: [],
-                abortHandling: function(ev, elt, eventName)
-                {
-                    log('abortHandling?');
-                    if (eventName == 'mouseover' || eventName == 'mouseout')
-                    {
-                        var id = Nj.Utils.identify($(ev.target)),
-                            idIndex = this.hovering.indexOf(id);
-                        log('Event', eventName);
-                        log('ev.target', ev.target, 'elt', elt, ev.target != elt, idIndex, this.hovering.join(' - '));
-                        if (ev.target != elt || idIndex != -1)
-                        {
-                            return true;
-                        }
-                        else if (eventName == 'mouseover' && idIndex == -1)
-                        {
-                            log('ADD to array elt id', id);
-                            this.hovering.push(id);
-                        }
-                        else
-                        {
-                            log('REMOVE from array', this.hovering.join(' - '), 'elt id', id);
-                            this.hovering.splice(idIndex, 1);
-                        }
-                    }
-                },
+                // hovering: [],
+                mouseouts: [],
+                // abortHandling: function(ev, elt, eventName)
+                // {
+                //     log('abortHandling?');
+                //     if (eventName == 'mouseover' || eventName == 'mouseout')
+                //     {
+                //         var id = Nj.Utils.identify($(ev.target)),
+                //             idIndex = this.hovering.indexOf(id);
+                //         log('Event', eventName);
+                //         log('ev.target', ev.target, 'elt', elt, ev.target != elt, idIndex, this.hovering.join(' - '));
+                //         if (ev.target != elt || idIndex != -1)
+                //         {
+                //             return true;
+                //         }
+                //         else if (eventName == 'mouseover' && idIndex == -1)
+                //         {
+                //             log('ADD to array elt id', id);
+                //             this.hovering.push(id);
+                //         }
+                //         else
+                //         {
+                //             log('REMOVE from array', this.hovering.join(' - '), 'elt id', id);
+                //             this.hovering.splice(idIndex, 1);
+                //         }
+                //     }
+                // },
                 /*
                     only check next mouseover to determine if previous mouseout must be called?
                     Steps : 
@@ -213,21 +216,62 @@
                     An element with a mouseover but without a mouseout should get a default mouseout that remove him from the hovering array.
                     by default mouseover / out handling should be delayed by 50ms timeouts. To make them realtime add a data-hoverrt.
                 */
-                handleNoDataFound: function(ev, jElt, eventName)
-                {
-                    log('handleNoDataFound');
-                    var id = Nj.Utils.identify(jElt),
-                        idIndex;
+                // handleNoDataFound: function(ev, jElt, eventName)
+                // {
+                //     log('handleNoDataFound');
+                //     var id = Nj.Utils.identify(jElt),
+                //         idIndex;
 
-                    if (eventName == 'mouseout' && ev.target == jElt.get(0) && (idIndex = this.hovering.indexOf(id)) != -1)
+                //     if (eventName == 'mouseout' && ev.target == jElt.get(0) && (idIndex = this.hovering.indexOf(id)) != -1)
+                //     {
+                //         log('no data for mouseout event on', jElt, idIndex);
+                //         log('REMOVE from array', this.hovering.join(' - '), 'elt id', id);
+                //         this.hovering.splice(idIndex, 1);
+                //     }
+                // },
+                beforeElementHandler: function(ev, jElt, eventName)
+                {
+                    log('beforeElementHandler');
+                    if (eventName == 'mouseover')
                     {
-                        log('no data for mouseout event on', jElt, idIndex);
-                        log('REMOVE from array', this.hovering.join(' - '), 'elt id', id);
-                        this.hovering.splice(idIndex, 1);
+                        log('beforeElementHandler', eventName);
+                        // Run previously remembered mouseout for this element 
+                        for (var i = 0, len = this.mouseouts.length; i < len; i++)
+                        {
+                            // if element is a child or the same of previously remembered element
+                            if (this.mouseouts[i].jElt.find(jElt))
+                            {
+                                // do not call remembered mouseout
+                            }
+                            else
+                            {
+                                // call remembered mouseout
+                                this.mouseouts[i].handle();
+                            }
+                        }
+                        log('beforeElementHandler', eventName);
+                        // search for data-mouseout
+                        if (jElt.data('mouseout'))
+                        {
+                            log('Found a mouseout');
+                            // remember element + mouseout to be called later
+                            // this.mouseouts.push({Nj.Utils.identify(jElt): arguments});
+                            // this.mouseouts.push({ev:ev, jElt:jElt, eventName:eventName});
+                        }
                     }
+                    if (eventName == 'mouseout')
+                    {
+                        log('beforeElementHandler', eventName);
+                        this.mouseouts.push({Nj.Utils.identify(jElt): arguments});
+                        return false;
+                    }
+
+                    return true;
                 },
                 eventHandler: function(ev, elt, eventName)
                 {
+                    log('eventHandler ', eventName);
+
                     var elt = elt || ev.target,
                         jElt = $(elt),
                         propagate = true,
@@ -257,11 +301,16 @@
                             return;
                         }
 
-                        if (this.abortHandling(ev, elt, eventName))
+                        if (!this.beforeElementHandler(ev, jElt, eventName))
                         {
-                            log('Abort' + eventName + ' on ', jElt);
-                            return false;
+                            return;
                         }
+
+                        // if (this.abortHandling(ev, elt, eventName))
+                        // {
+                        //     log('Abort' + eventName + ' on ', jElt);
+                        //     return;
+                        // }
 
                         // Remember which element was event-ised (store its id in the appropriate handler)
                         this.rememberElementForEvent(eventName, jElt);
@@ -303,10 +352,10 @@
                             propagate = propagate && handlerPropagate;
                         }
                     }
-                    else
-                    {
-                        this.handleNoDataFound(ev, jElt, eventName);
-                    }
+                    // else
+                    // {
+                    //     this.handleNoDataFound(ev, jElt, eventName);
+                    // }
 
                     if (propagate)
                     {
