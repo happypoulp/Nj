@@ -211,6 +211,7 @@
                             - if NOT then call the mouseout for the remembered element.
                     All remembered element should be stored as a FILO.
                     An element with a mouseover but without a mouseout should get a default mouseout that remove him from the hovering array.
+                    by default mouseover / out handling should be delayed by 50ms timeouts. To make them realtime add a data-hoverrt.
                 */
                 handleNoDataFound: function(ev, jElt, eventName)
                 {
