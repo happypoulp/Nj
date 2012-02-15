@@ -553,6 +553,24 @@
                     </span>
                 </div>
 
+                <div class="sep"></div>
+
+                <div class="test_div level_1" data-mouseover="Test.done">
+                    <span class="info">
+                        I have a <span>data-mouseover="Test.done"</span> which <span>propagate</span>
+                    </span>
+                    <div class="test_div level_1" data-mouseover="Test.done_no_prop">
+                        <span class="info">
+                            I have a <span>data-mouseover="Test.done_no_prop"</span> which <span>DO NOT propagate</span>
+                        </span>
+                        <div class="test_div level_1" data-mouseover="Test.done">
+                            <span class="info">
+                                I have a <span>data-mouseover="Test.done"</span> which <span>propagate</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- ------------------------------------ MOUSEOUT ------------------------------------------------- -->
                 
                 <h2>MouseOut Event</h2> 
@@ -561,6 +579,24 @@
                     <span class="info">
                         I have a <span>data-mouseout="Test.done"</span> which <span>propagate</span>
                     </span>
+                </div>
+
+                <div class="sep"></div>
+
+                <div class="test_div level_1" data-mouseout="Test.done">
+                    <span class="info">
+                        I have a <span>data-mouseout="Test.done"</span> which <span>propagate</span>
+                    </span>
+                    <div class="test_div level_1" data-mouseout="Test.done_no_prop">
+                        <span class="info">
+                            I have a <span>data-mouseout="Test.done_no_prop"</span> which <span>DO NOT propagate</span>
+                        </span>
+                        <div class="test_div level_1" data-mouseout="Test.done">
+                            <span class="info">
+                                I have a <span>data-mouseout="Test.done"</span> which <span>propagate</span>
+                            </span>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- ------------------------------------ MOUSEOVER & MOUSEOUT ------------------------------------------------- -->
@@ -574,9 +610,74 @@
                     </span>
                 </div>
 
+                <div class="sep"></div>
+
+                <div class="test_div level_1" data-mouseover="Test.done" data-mouseout="Test.done">
+                    <span class="info">
+                        I have a <span>data-mouseout="Test.done"</span> which <span>propagate</span>
+                        and I have a <span>data-mouseover="Test.done"</span> which <span>propagate</span>
+                    </span>
+                    <div class="test_div level_1" data-mouseover="Test.done_no_prop" data-mouseout="Test.done_no_prop">
+                        <span class="info">
+                            I have a <span>data-mouseout="Test.done_no_prop"</span> which <span>DO NOT propagate</span>
+                            and I have a <span>data-mouseover="Test.done_no_prop"</span> which <span>DO NOT propagate</span>
+                        </span>
+                        <div class="test_div level_1" data-mouseover="Test.done" data-mouseout="Test.done">
+                            <span class="info">
+                                I have a <span>data-mouseout="Test.done"</span> which <span>propagate</span>
+                                and I have a <span>data-mouseover="Test.done"</span> which <span>propagate</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- ------------------------------------ SUBMIT ------------------------------------------------- -->
 
                 <h2>Submit Event</h2>
+
+                <div class="test_div level_1">
+                    <span class="info">
+                        I have a <span>data-submit="Test.done"</span> which <span>propagate</span>
+                    </span>
+                    <form data-submit="Test.done" action="#">
+                        <input type="text" name="toto" />
+                        <input type="submit" />
+                    </form>
+                </div>
+
+                <div class="sep"></div>
+
+                <div class="test_div level_1" data-submit="Test.done">
+                    <span class="info">
+                        I have a <span>data-submit="Test.done"</span> which <span>propagate</span>
+                    </span>
+                    <div class="test_div level_1">
+                        <span class="info">
+                            I have a <span>data-submit="Test.done"</span> which <span>propagate</span>
+                        </span>
+                        <form data-submit="Test.done" action="#">
+                            <input type="text" name="toto" />
+                            <input type="submit" />
+                        </form>
+                    </div>
+                </div>
+
+                <div class="sep"></div>
+
+                <div class="test_div level_1" data-submit="Test.done">
+                    <span class="info">
+                        I have a <span>data-submit="Test.done"</span> which <span>propagate</span>
+                    </span>
+                    <div class="test_div level_1">
+                        <span class="info">
+                            I have a <span>data-submit="Test.done_no_prop"</span> which <span>DO NOT propagate</span>
+                        </span>
+                        <form data-submit="Test.done_no_prop" action="#">
+                            <input type="text" name="toto" />
+                            <input type="submit" />
+                        </form>
+                    </div>
+                </div>
 
             </div>
         </div>

@@ -8,19 +8,20 @@
             {
                 log: function()
                 {
+                    args = [new Date().toLocaleTimeString()].concat(Array.prototype.slice.call(arguments))
                     try
                     {
-                        console.log.apply(console, arguments);
+                        console.log.apply(console, args);
                     }
                     catch(e)
                     {
                         try
                         {
-                            opera.postError.apply(opera, arguments);
+                            opera.postError.apply(opera, args);
                         }
                         catch(e)
                         {
-                            alert(Array.prototype.join.call( arguments, " " ));
+                            alert(Array.prototype.join.call( args, " " ));
                         }
                     }
                 },
@@ -33,6 +34,19 @@
                     u.counter = 0;
                     return u;
                 })(),
+                $: function(id)
+                {
+                    return document.getElementById(id);
+                },
+                inspect: function(obj)
+                {
+                    var o = '';
+                    for (var i in obj)
+                    {
+                        o += ' '+i + ':'+obj[i];
+                    }
+                    return '{' + o + ' }';
+                },
                 capitalize: function(str)
                 {
                     return str.charAt(0).toUpperCase() + str.substring(1).toLowerCase();
@@ -53,6 +67,8 @@
             },
             Event: // Event handles Event Delegation ...
             {
+                lastHandlerCalledList: {},
+                register_no_data_elements: false,
                 // Start Event Delegation
                 init: function()
                 {
@@ -64,6 +80,7 @@
                     .click($.proxy(function(e)
                     {
                         // log('############## document click initiated from : ', e.target);
+                         Nj.Event.register_no_data_elements = false;
                         this.eventHandler(e, null, 'click');
                     }, this))
                     // ... via "document mousedown"
@@ -74,6 +91,7 @@
                         if ((e.button && e.button != 2) || (e.which && e.which != 3)) // To avoid catching right clicks
                         {
                             // log('document mousedown initiated from : ', e.target);
+                            Nj.Event.register_no_data_elements = false;
                             this.eventHandler(e, null, 'mousedown');
                         }
                     }, this))
@@ -84,6 +102,7 @@
                         if (!this.handleSpecialMouseDownUp(e, 'mouseup'))
                         {
                             // log('mouseup not specialy handled, do it default way');
+                            Nj.Event.register_no_data_elements = false;
                             this.eventHandler(e, null, 'mouseup');
                         }
                     }, this))
@@ -92,6 +111,7 @@
                     .submit($.proxy(function(e)
                     {
                         // log('############## document submit initiated from : ', e.target);
+                            Nj.Event.register_no_data_elements = false;
                         this.eventHandler(e, null, 'submit');
                     }, this))
 
@@ -99,21 +119,36 @@
                     .keyup($.proxy(function(e)
                     {
                         // log('############## document keyup initiated from : ', e.target);
+                            Nj.Event.register_no_data_elements = false;
                         this.eventHandler(e, null, 'keyup');
                     }, this))
 
                     // ... via "document mouseover"
                     .mouseover($.proxy(function(e)
                     {
-                        log('############## document mouseover initiated from : ', e.target);
-                        this.eventHandler(e, null, 'mouseover');
+                        // log('############## document MOUSEOVER recieved from : ', e.target);
+                        this.mouseoveredElement = e.target;
+                        this.mouseoverTimeout && clearTimeout(this.mouseoverTimeout);
+                        this.mouseoverTimeout = setTimeout(function()
+                        {
+                            // log('## document MOUSEOVER TIMEOUT reached for : ', e.target);
+                            Nj.Event.register_no_data_elements = true;
+                            Nj.Event.eventHandler(e, null, 'mouseover');
+                        }, 75);
                     }, this))
                     // ;
                     // ... via "document mouseout"
                     .mouseout($.proxy(function(e)
                     {
-                        log('############## document mouseout initiated from : ', e.target);
-                        this.eventHandler(e, null, 'mouseout');
+                        // log('############## document MOUSEOUT recieved from : ', e.target);
+                        this.mouseoutedElement = e.target;
+                        this.mouseoutTimeout && clearTimeout(this.mouseoutTimeout);
+                        this.mouseoutTimeout = setTimeout(function()
+                        {
+                            // log('## document MOUSEOUT TIMEOUT reached for : ', e.target);
+                            Nj.Event.register_no_data_elements = false;
+                            Nj.Event.eventHandler(e, null, 'mouseout');
+                        }, 75);
                     }, this));
                 },
                 // Register new handlers for given module
@@ -150,7 +185,6 @@
                 rememberElementForEvent: function(eventName, jElt)
                 {
                     // log('rememberElementForEvent', eventName, jElt);
-
                     if (eventName == 'mousedown' && jElt.data('mousedown') && jElt.data('mouseup') && jElt.attr('data-followmouseup') == '' && !this.mouseDownEltId)
                     {
                         this.mouseDownEltId = Nj.Utils.identify(jElt);
@@ -162,155 +196,169 @@
                     var jElt = $(ev.target);
 
                     // log('handleSpecialMouseDownUp', this.mouseDownEltId);
-
                     if (eventName == 'mouseup' && this.mouseDownEltId)
                     {
                         if (Nj.Utils.identify(jElt) != this.mouseDownEltId)
                         {
                             // log('Found a special handler for', this.mouseDownEltId);
-                            var jElt = $('#' + this.mouseDownEltId);
+                            var elt = Nj.Utils.$(this.mouseDownEltId);
                             this.mouseDownEltId = null;
-                            this.eventHandler(ev, jElt.get(0), 'mouseup');
+                            this.eventHandler(ev, elt, 'mouseup');
                             return true;
                         }
                     }
 
                     this.mouseDownEltId = null;
                 },
-                // hovering: [],
-                mouseouts: [],
-                // abortHandling: function(ev, elt, eventName)
-                // {
-                //     log('abortHandling?');
-                //     if (eventName == 'mouseover' || eventName == 'mouseout')
-                //     {
-                //         var id = Nj.Utils.identify($(ev.target)),
-                //             idIndex = this.hovering.indexOf(id);
-                //         log('Event', eventName);
-                //         log('ev.target', ev.target, 'elt', elt, ev.target != elt, idIndex, this.hovering.join(' - '));
-                //         if (ev.target != elt || idIndex != -1)
-                //         {
-                //             return true;
-                //         }
-                //         else if (eventName == 'mouseover' && idIndex == -1)
-                //         {
-                //             log('ADD to array elt id', id);
-                //             this.hovering.push(id);
-                //         }
-                //         else
-                //         {
-                //             log('REMOVE from array', this.hovering.join(' - '), 'elt id', id);
-                //             this.hovering.splice(idIndex, 1);
-                //         }
-                //     }
-                // },
-                /*
-                    only check next mouseover to determine if previous mouseout must be called?
-                    Steps : 
-                        - onmouseover DO the job 
-                            - remember the element mouseovered + all params needed to call mouse out later FOR THIS ELEMENT.
-                        - check if the element concerned by the mouseover is a child of the remembered mouseovered element
-                            - if IT IS, do NOT call remembered mouseout FOR THE REMEMBERED ELEMENT
-                            - if NOT then call the mouseout for the remembered element.
-                    All remembered element should be stored as a FILO.
-                    An element with a mouseover but without a mouseout should get a default mouseout that remove him from the hovering array.
-                    by default mouseover / out handling should be delayed by 50ms timeouts. To make them realtime add a data-hoverrt.
-                */
-                // handleNoDataFound: function(ev, jElt, eventName)
-                // {
-                //     log('handleNoDataFound');
-                //     var id = Nj.Utils.identify(jElt),
-                //         idIndex;
-
-                //     if (eventName == 'mouseout' && ev.target == jElt.get(0) && (idIndex = this.hovering.indexOf(id)) != -1)
-                //     {
-                //         log('no data for mouseout event on', jElt, idIndex);
-                //         log('REMOVE from array', this.hovering.join(' - '), 'elt id', id);
-                //         this.hovering.splice(idIndex, 1);
-                //     }
-                // },
-                beforeElementHandler: function(ev, jElt, eventName)
+                abortHandling: function(eventName, elt)
                 {
-                    log('beforeElementHandler');
+                    // log('[abortHandling]');
                     if (eventName == 'mouseover')
                     {
-                        log('beforeElementHandler', eventName);
-                        // Run previously remembered mouseout for this element 
-                        for (var i = 0, len = this.mouseouts.length; i < len; i++)
+                        // log('abort mouseover?');
+                        // log('Last mouseouted element', this.mouseoutedElement);
+                        // log('Abort if there is this.mouseoutedElement and it is ', elt, 'or one of its child : ', $(elt).find(this.mouseoutedElement).length);
+                        // log('AND');
+                        // log('if this.lastHandlerCalledList.mouseover', this.lastHandlerCalledList.mouseover, 'and eltId "',elt.id, '" is in it');
+                        if (
+                            this.mouseoutedElement &&
+                            (elt == this.mouseoutedElement || $(elt).find(this.mouseoutedElement).length) &&
+                            this.lastHandlerCalledList.mouseover &&
+                            elt.id &&
+                            this.lastHandlerCalledList.mouseover[elt.id]
+                        )
                         {
-                            // if element is a child or the same of previously remembered element
-                            if (this.mouseouts[i].jElt.find(jElt))
-                            {
-                                // do not call remembered mouseout
-                            }
-                            else
-                            {
-                                // call remembered mouseout
-                                this.mouseouts[i].handle();
-                            }
-                        }
-                        log('beforeElementHandler', eventName);
-                        // search for data-mouseout
-                        if (jElt.data('mouseout'))
-                        {
-                            log('Found a mouseout');
-                            // remember element + mouseout to be called later
-                            // this.mouseouts.push({Nj.Utils.identify(jElt): arguments});
-                            // this.mouseouts.push({ev:ev, jElt:jElt, eventName:eventName});
+                            return true;
                         }
                     }
                     if (eventName == 'mouseout')
                     {
-                        log('beforeElementHandler', eventName);
-                        this.mouseouts.push({Nj.Utils.identify(jElt): arguments});
-                        return false;
+                        // log('abort mouseout?');
+                        // log('Last mouseovered element element', this.mouseoveredElement);
+                        // log('Abort if there is this.mouseoveredElement and it is ', elt, 'or one of its child : ', $(elt).find(this.mouseoveredElement).length);
+                        if (
+                            this.mouseoveredElement &&
+                            (elt == this.mouseoveredElement || $(elt).find(this.mouseoveredElement).length)
+                        )
+                        {
+                            return true;
+                        }
                     }
 
-                    return true;
+                    return false;
                 },
-                eventHandler: function(ev, elt, eventName)
+                lastHandlerCalled: function(eventName, eltId)
                 {
-                    log('eventHandler ', eventName);
+                    var events = ['mouseout', 'mouseover'];
 
-                    var elt = elt || ev.target,
+                    if (events.indexOf(eventName) != -1)
+                    {
+                        var oppositeHandlerCalledList = this.lastHandlerCalledList[events[1 - events.indexOf(eventName)]];
+
+                        if (!this.lastHandlerCalledList[eventName])
+                        {
+                            this.lastHandlerCalledList[eventName] = {};
+                        }
+                        this.lastHandlerCalledList[eventName][eltId] = 1;
+                        oppositeHandlerCalledList && delete(oppositeHandlerCalledList[eltId]);
+                    }
+                },
+                propagationEnded: function(ev, eventName)
+                {
+                    // log('[propagationEnded]', ev, eventName);
+                    if (eventName == 'mouseout' && ev && this.lastHandlerCalledList.mouseover)
+                    {
+                        // log('Handle propagation ended for mouseout');
+                        var target = ev.target,
+                            targetId = Nj.Utils.identify($(target)),
+                            elementsToMouseout = this.lastHandlerCalledList.mouseover;
+
+                        // log('Original event for mouseout :', ev.target);
+                        // log('iterate on', Nj.Utils.inspect(elementsToMouseout), 'to call mouseout if needed.')
+
+                        // Unregister lastHandlerCalledList.mouseover
+                        for (var id in elementsToMouseout)
+                        {
+                            // log('$(#'+targetId+').closest(#'+id+').length=', $('#' + targetId).closest('#' + id).length);
+
+                            if ($('#' + targetId).closest('#' + id).length)
+                            {
+                                // log(id, 'is an ancestor (or himself) of', targetId);
+                                // log('this.mouseoveredElement', this.mouseoveredElement);
+
+                                if (targetId == id)
+                                {
+                                    // log('targetId == id');
+                                    if (!$('#' + id).find(this.mouseoveredElement).length)
+                                    {
+                                        // log('Call eventHandler for mouseout on elt with id ', id);
+                                        Nj.Event.eventHandler(ev, Nj.Utils.$(id), 'mouseout', false);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                // log(id + ' is a child or a neighbour of ' + targetId);
+                                // log('this.mouseoveredElement', this.mouseoveredElement);
+                                // log('this.mouseoutedElement', this.mouseoutedElement);
+                                // log('Call eventHandler for mouseout on elt with id ', id);
+                                Nj.Event.eventHandler(ev, Nj.Utils.$(id), 'mouseout', false);
+                            }
+                        }
+                    }
+                },
+                removeCalledHandler: function(eventName, elt)
+                {
+                    eventName = eventName == 'mouseout' ? 'mouseover' : eventName;
+                    // log('[removeCalledHandler]', eventName, elt);
+                    // log('this.lastHandlerCalledList[' + eventName + ']', Nj.Utils.inspect(this.lastHandlerCalledList[eventName]));
+                    if (this.lastHandlerCalledList[eventName] && elt && elt.id)
+                    {
+                        // log('^^^^ DO REMOVE', elt.id, 'from', Nj.Utils.inspect(this.lastHandlerCalledList[eventName]));
+                        delete(this.lastHandlerCalledList[eventName][elt.id]);
+                    }
+                },
+                eventHandler: function(ev, elt, eventName, force_propagate)
+                {
+                    // log('[eventHandler]', ev, elt, eventName, force_propagate);
+
+                    var elt = elt || (ev ? ev.target : null),
                         jElt = $(elt),
-                        propagate = true,
+                        propagate = force_propagate === undefined ? true : force_propagate,
                         data = jElt.data(eventName);
-                        log('Search for data-' + eventName + ' in ', jElt);
+                        // log('Search for data-' + eventName + ' in ', jElt);
+
+                    // log('this.register_no_data_elements', this.register_no_data_elements);
 
                     if (data && /\./.test(data))
                     {
-                        log('Found data', eventName);
+                        // log('Found data', eventName);
 
                         var parts = data.split('.'),
                             jsonData = {module: parts[0], name: parts[1]}; // log('Datas found in this element : ', jsonData);
 
                         // By default we assume that we want to prevent default behavior to occur
-                        ev.preventDefault();
+                        ev && ev.preventDefault();
+
+                        if (this.abortHandling(eventName, elt))
+                        {
+                            // log('**** Abort', eventName, 'on', jElt);
+                            return;
+                        }
 
                         // Handle module dependant handler
                         if (jsonData.module && !Nj.Modules.loaded(jsonData.module))
                         {
-                            log('Need loading of module', jsonData.module);
+                            // log('Need loading of module', jsonData.module);
                             // Load required module and assign callback
                             Nj.Modules.loadForEventOnElement(eventName, elt, function()
                             {
-                                log(jsonData.module, 'Module loaded relaunch handler');
+                                // log(jsonData.module, 'Module loaded relaunch handler');
                                 Nj.Event.eventHandler(ev, elt, eventName);
                             });
                             return;
                         }
 
-                        if (!this.beforeElementHandler(ev, jElt, eventName))
-                        {
-                            return;
-                        }
-
-                        // if (this.abortHandling(ev, elt, eventName))
-                        // {
-                        //     log('Abort' + eventName + ' on ', jElt);
-                        //     return;
-                        // }
 
                         // Remember which element was event-ised (store its id in the appropriate handler)
                         this.rememberElementForEvent(eventName, jElt);
@@ -319,16 +367,19 @@
                         // Search for handler associated to jsonData.name in registry
                         if (this.registry[eventName][handlerName])
                         {
-                            log('Handler found for this event on this element');
-                            // Run handler
-                            log('### Run handler ###');
+                            // log('Handler found for this event on this element');
+                            // log('### Run handler ###');
+
                             var handlerReturn = this.registry[eventName][handlerName]({event: ev, element: elt, elDatas: jsonData}),
                                 handlerPropagate = false;
+
+                            this.register_no_data_elements = false;
+
+                            this.lastHandlerCalled(eventName, Nj.Utils.identify(jElt));
 
                             if (handlerReturn && handlerReturn.redirect)
                             {
                                 var redirectHref = handlerReturn.redirect || elt.href;
-
                                 if (redirectHref)
                                 {
                                     return document.location = redirectHref;
@@ -352,26 +403,33 @@
                             propagate = propagate && handlerPropagate;
                         }
                     }
-                    // else
-                    // {
-                    //     this.handleNoDataFound(ev, jElt, eventName);
-                    // }
-
-                    if (propagate)
+                    else if(this.register_no_data_elements)
                     {
-                        // log('Propagate event', eventName);
-                        this.propagateEventFromElement(ev, elt, eventName);
+                        // log('Add', Nj.Utils.identify(jElt), 'to list of handler called for', eventName);
+                        this.lastHandlerCalled(eventName, Nj.Utils.identify(jElt));
                     }
+
+                    if (force_propagate === false)
+                    {
+                        this.removeCalledHandler(eventName, elt);
+                    }
+
+                    this.propagateEventFromElement(ev, elt, eventName, propagate);
                 },
-                propagateEventFromElement: function(ev, elt, eventName)
+                propagateEventFromElement: function(ev, elt, eventName, propagate)
                 {
+                    // log('[propagateEventFromElement]', ev, elt, eventName, propagate);
                     // elt.nodeType == 1 is to check that we do not go beyond "html" tag
-                    if ((elt = elt.parentNode) && elt.nodeType == 1)
+                    if (propagate && (elt = elt.parentNode) && elt.nodeType == 1)
                     {
                         // log('Event', eventName, 'Element found for propagation : ', $(elt));
                         return this.eventHandler(ev, elt, eventName);
                     }
-                    log('------------------ END OF PROPAGATION "', eventName, '" ----------------');
+
+                    // log('Call propagation ended for', eventName);
+                    this.propagationEnded(ev, eventName);
+
+                    // log('------------------ END OF PROPAGATION "', eventName, '" ----------------');
                 }
             },
             // Modules handles the logic for loading and managing all JS modules of the page.
@@ -560,7 +618,7 @@
                 },
                 form: function(datas)
                 {
-                    var jForm = $(datas['elt']),
+                    var jForm = $(datas.elt),
                         ajaxMethod = $[jForm.attr('method') || 'get'],
                         callId = {id: Nj.Utils.unique()};
 
