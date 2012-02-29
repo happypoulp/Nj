@@ -633,7 +633,7 @@
 
                 <!-- ------------------------------------ SUBMIT ------------------------------------------------- -->
 
-                <h2>Submit Event</h2>
+                <h2>Submit Event (IE >= 9)</h2>
 
                 <div class="test_div level_1">
                     <span class="info">
@@ -676,6 +676,91 @@
                             <input type="text" name="toto" />
                             <input type="submit" />
                         </form>
+                    </div>
+                </div>
+
+
+                <!-- ------------------------------------ FOCUSIN ------------------------------------------------- -->
+
+                <h2>Focusin Event</h2>
+
+                <div class="test_div level_1" data-focusin="Test.done">
+                    <span class="info">
+                        I have a <span>data-keyup="Test.done"</span> which <span>propagate</span>
+                    </span>
+                    <div class="test_div level_1" data-focusin="Test.done">
+                        <span class="info">
+                            I have a <span>data-keyup="Test.done"</span> which <span>propagate</span>
+                        </span>
+                        <div class="test_div level_1" data-focusin="Test.done">
+                            <input type="text" name="i" data-focusin="Test.done"/>
+                            <span class="info">
+                                I have a <span>data-focusin="Test.done"</span> which <span>propagate</span>
+                                The input have a <span>data-focusin="Test.done"</span> which <span>propagate</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="sep"></div>
+
+                <div class="test_div level_1" data-focusin="Test.done">
+                    <span class="info">
+                        I have a <span>data-keyup="Test.done"</span> which <span>propagate</span>
+                    </span>
+                    <div class="test_div level_1" data-focusin="Test.done_no_prop">
+                        <span class="info">
+                            I have a <span>data-keyup="Test.done_no_prop"</span> which <span>DO NOT propagate</span>
+                        </span>
+                        <div class="test_div level_1" data-focusin="Test.done">
+                            <input type="text" name="i" data-focusin="Test.done"/>
+                            <span class="info">
+                                I have a <span>data-focusin="Test.done"</span> which <span>propagate</span>
+                                The input have a <span>data-focusin="Test.done"</span> which <span>propagate</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ------------------------------------ FOCUSOUT ------------------------------------------------- -->
+
+                <h2>Focusout Event</h2>
+
+                <div class="test_div level_1" data-focusout="Test.done">
+                    <span class="info">
+                        I have a <span>data-keyup="Test.done"</span> which <span>propagate</span>
+                    </span>
+                    <div class="test_div level_1" data-focusout="Test.done">
+                        <span class="info">
+                            I have a <span>data-keyup="Test.done"</span> which <span>propagate</span>
+                        </span>
+                        <div class="test_div level_1" data-focusout="Test.done">
+                            <input type="text" name="i" data-focusout="Test.done"/>
+                            <span class="info">
+                                I have a <span>data-focusout="Test.done"</span> which <span>propagate</span>
+                                The input have a <span>data-focusout="Test.done"</span> which <span>propagate</span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sep"></div>
+
+                <div class="test_div level_1" data-focusout="Test.done">
+                    <span class="info">
+                        I have a <span>data-keyup="Test.done"</span> which <span>propagate</span>
+                    </span>
+                    <div class="test_div level_1" data-focusout="Test.done_no_prop">
+                        <span class="info">
+                            I have a <span>data-keyup="Test.done_no_prop"</span> which <span>DO NOT propagate</span>
+                        </span>
+                        <div class="test_div level_1" data-focusout="Test.done">
+                            <input type="text" name="i" data-focusout="Test.done"/>
+                            <span class="info">
+                                I have a <span>data-focusout="Test.done"</span> which <span>propagate</span>
+                                The input have a <span>data-focusout="Test.done"</span> which <span>propagate</span>
+                            </span>
+                        </div>
                     </div>
                 </div>
 

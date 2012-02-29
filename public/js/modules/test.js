@@ -206,6 +206,30 @@ handler: function(handlerDatas)
                     $(handlerDatas.element).append('<span class="green">#done_no_prop submit# </span>');
                     return false;
                 }
+            },
+            focusin:
+            {
+                done: function(handlerDatas)
+                {
+                    $(handlerDatas.element).append('<span class="green">#done focusin# </span>');
+                },
+                done_no_prop: function(handlerDatas)
+                {
+                    $(handlerDatas.element).append('<span class="green">#done_no_prop focusin# </span>');
+                    return false;
+                }
+            },
+            focusout:
+            {
+                done: function(handlerDatas)
+                {
+                    $(handlerDatas.element).append('<span class="green">#done focusout# </span>');
+                },
+                done_no_prop: function(handlerDatas)
+                {
+                    $(handlerDatas.element).append('<span class="green">#done_no_prop focusout# </span>');
+                    return false;
+                }
             }
         },
         inputCallback: function(html, xdatas)

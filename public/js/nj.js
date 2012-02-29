@@ -111,7 +111,7 @@
                     .submit($.proxy(function(e)
                     {
                         // log('############## document submit initiated from : ', e.target);
-                            Nj.Event.register_no_data_elements = false;
+                        Nj.Event.register_no_data_elements = false;
                         this.eventHandler(e, null, 'submit');
                     }, this))
 
@@ -119,7 +119,7 @@
                     .keyup($.proxy(function(e)
                     {
                         // log('############## document keyup initiated from : ', e.target);
-                            Nj.Event.register_no_data_elements = false;
+                        Nj.Event.register_no_data_elements = false;
                         this.eventHandler(e, null, 'keyup');
                     }, this))
 
@@ -136,7 +136,6 @@
                             Nj.Event.eventHandler(e, null, 'mouseover');
                         }, 75);
                     }, this))
-                    // ;
                     // ... via "document mouseout"
                     .mouseout($.proxy(function(e)
                     {
@@ -149,6 +148,20 @@
                             Nj.Event.register_no_data_elements = false;
                             Nj.Event.eventHandler(e, null, 'mouseout');
                         }, 75);
+                    }, this))
+                    // ... via "document focusin"
+                    .bind('focusin', $.proxy(function(e)
+                    {
+                        // log('############## document FOCUSIN recieved from : ', e.target);
+                        Nj.Event.register_no_data_elements = false;
+                        Nj.Event.eventHandler(e, null, 'focusin');
+                    }, this))
+                    // ... via "document focusout"
+                    .bind('focusout', $.proxy(function(e)
+                    {
+                        // log('############## document FOCUSOUT recieved from : ', e.target);
+                        Nj.Event.register_no_data_elements = false;
+                        Nj.Event.eventHandler(e, null, 'focusout');
                     }, this));
                 },
                 // Register new handlers for given module
